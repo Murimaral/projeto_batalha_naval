@@ -1,0 +1,25 @@
+
+-> condição de vitória: destruir todos os navios + nao esgotar tentativas
+              - Correr a matriz e verificar se há algum navio
+
+-> condição de derrota: esgotar tentativas, existindo ao menos um navio
+
+-> formatação do tabuleiro com rotulos de coluna e linha
+
+-> retorno formatado a cada jogada
+
+-> Função de verificação -> acertou ou errou?
+
+-> Função de atualização do novo tabuleiro
+
+-> criar mais tamanhos de navios
+             - criar estruturas de dados
+
+-> validação de entrada:
+             - dados incoerentes -> tipos de dados e/ou fora do range
+			 - dados repetidos -> A1, A1
+
+-> mensagens ERRO/ACERTO
+
+-> 
+
