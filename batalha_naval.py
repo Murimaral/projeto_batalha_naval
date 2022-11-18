@@ -1,5 +1,6 @@
 from random import randint
 import numpy as np
+import pandas as pd
 
 class BatalhaNaval():
     def __init__(self, dificuldade='facil'):
@@ -8,13 +9,22 @@ class BatalhaNaval():
         self.pontos = 0
         self.tentativas_restantes = 5
         self.dificuldade = dificuldade
-        self.tabuleiro = np.array(self.gerar_tabuleiro_vazio())
-        self.tabuleiro_gabarito = np.array(self.gerar_tabuleiro_vazio())
+        self.tabuleiro = self.gerar_tabuleiro_vazio()
+        self.tabuleiro_gabarito = self.gerar_tabuleiro_vazio()
 
 
     # Geração do tabuleiro em branco (apenas "água")
     def gerar_tabuleiro_vazio(self):
-        return [['~^'] * self.ordem for i in range(self.ordem)]
+        array_agua = ['~^'] * self.ordem
+        coordenadas_letras = "ABCDEFGHIJ"
+        dict_coordenadas = {}
+        for letra in coordenadas_letras:
+            dict_coordenadas[letra]=array_agua
+        
+        tabuleiro = pd.DataFrame.from_dict(dict_coordenadas, \
+                    orient="index", columns= list(range(1,11)))
+        return tabuleiro
+
 
     # Popular aleatoriamente o tabuleiro criado com os navios
     def popular_navios(self):
@@ -24,8 +34,8 @@ class BatalhaNaval():
         while navios_restantes:
             x = randint(0, self.ordem-1)
             y = randint(0, self.ordem-1)
-            if self.tabuleiro_gabarito[x][y] == '~~':
-                self.tabuleiro_gabarito[x][y] = 'NN'
+            if self.tabuleiro_gabarito.iloc[x].at[y] == '~~':
+                self.tabuleiro_gabarito.iloc[x].at[y] = 'NN'
                 navios_restantes-=1
         return self.tabuleiro_gabarito
             
@@ -39,36 +49,36 @@ class BatalhaNaval():
             if sentido == "vertical":
                 # vertical
                 x = randint(2, self.ordem-3)
-                y = randint(0, self.ordem-1)
-                if len(set([self.tabuleiro_gabarito[x-2][y],\
-                           self.tabuleiro_gabarito[x-1][y],\
-                           self.tabuleiro_gabarito[x][y],\
-                           self.tabuleiro_gabarito[x+1][y],\
-                           self.tabuleiro_gabarito[x+2][y]]))>1:
+                y = randint(1, self.ordem)
+                if len(set([self.tabuleiro_gabarito.iloc[x-2].at[y],\
+                           self.tabuleiro_gabarito.iloc[x-1].at[y],\
+                           self.tabuleiro_gabarito.iloc[x].at[y],\
+                           self.tabuleiro_gabarito.iloc[x+1].at[y],\
+                           self.tabuleiro_gabarito.iloc[x+2].at[y]]))>1:
                            tentativas-=1
                            continue
-                self.tabuleiro_gabarito[x-2][y],\
-                           self.tabuleiro_gabarito[x-1][y],\
-                           self.tabuleiro_gabarito[x][y],\
-                           self.tabuleiro_gabarito[x+1][y],\
-                           self.tabuleiro_gabarito[x+2][y] = 'TT','||','PA','||','YY'
+                self.tabuleiro_gabarito.iloc[x-2].at[y],\
+                           self.tabuleiro_gabarito.iloc[x-1].at[y],\
+                           self.tabuleiro_gabarito.iloc[x].at[y],\
+                           self.tabuleiro_gabarito.iloc[x+1].at[y],\
+                           self.tabuleiro_gabarito.iloc[x+2].at[y] = 'TT','||','PA','||','YY'
                 
             else:
                 # horizontal
                 x = randint(0, self.ordem-1)
-                y = randint(2, self.ordem-3)
-                if len(set([self.tabuleiro_gabarito[x][y-2],\
-                           self.tabuleiro_gabarito[x][y-1],\
-                           self.tabuleiro_gabarito[x][y],\
-                           self.tabuleiro_gabarito[x][y+1],\
-                           self.tabuleiro_gabarito[x][y+2]]))>1:
+                y = randint(3, self.ordem-2)
+                if len(set([self.tabuleiro_gabarito.iloc[x].at[y-2],\
+                           self.tabuleiro_gabarito.iloc[x].at[y-1],\
+                           self.tabuleiro_gabarito.iloc[x].at[y],\
+                           self.tabuleiro_gabarito.iloc[x].at[y+1],\
+                           self.tabuleiro_gabarito.iloc[x].at[y+2]]))>1:
                            tentativas-=1
                            continue
-                self.tabuleiro_gabarito[x][y-2],\
-                           self.tabuleiro_gabarito[x][y-1],\
-                           self.tabuleiro_gabarito[x][y],\
-                           self.tabuleiro_gabarito[x][y+1],\
-                           self.tabuleiro_gabarito[x][y+2] = ' <','==','PA','==','> '
+                self.tabuleiro_gabarito.iloc[x].at[y-2],\
+                           self.tabuleiro_gabarito.iloc[x].at[y-1],\
+                           self.tabuleiro_gabarito.iloc[x].at[y],\
+                           self.tabuleiro_gabarito.iloc[x].at[y+1],\
+                           self.tabuleiro_gabarito.iloc[x].at[y+2] = ' <','==','PA','==','> '
             navios_restantes-=1
             sentido = "horizontal" if randint(0,1) else "vertical"
         return self.tabuleiro_gabarito
@@ -83,27 +93,27 @@ class BatalhaNaval():
             if sentido == "vertical":
                 # vertical
                 x = randint(1, self.ordem-2)
-                y = randint(0, self.ordem-1)
-                if len(set([self.tabuleiro_gabarito[x-1][y],\
-                           self.tabuleiro_gabarito[x][y],\
-                           self.tabuleiro_gabarito[x+1][y]])) > 1:
+                y = randint(1, self.ordem)
+                if len(set([self.tabuleiro_gabarito.iloc[x-1].at[y],\
+                           self.tabuleiro_gabarito.iloc[x].at[y],\
+                           self.tabuleiro_gabarito.iloc[x+1].at[y]])) > 1:
                            tentativas-=1
                            continue
-                self.tabuleiro_gabarito[x-1][y],\
-                           self.tabuleiro_gabarito[x][y],\
-                           self.tabuleiro_gabarito[x+1][y] = 'TT','||','YY'
+                self.tabuleiro_gabarito.iloc[x-1].at[y],\
+                           self.tabuleiro_gabarito.iloc[x].at[y],\
+                           self.tabuleiro_gabarito.iloc[x+1].at[y] = 'TT','||','YY'
             else:
                 # horizontal
                 x = randint(0, self.ordem-1)
-                y = randint(1, self.ordem-2)
-                if len(set([self.tabuleiro_gabarito[x][y-1],\
-                           self.tabuleiro_gabarito[x][y],\
-                           self.tabuleiro_gabarito[x][y+1]])) > 1:
+                y = randint(2, self.ordem-1)
+                if len(set([self.tabuleiro_gabarito.iloc[x].at[y-1],\
+                           self.tabuleiro_gabarito.iloc[x].at[y],\
+                           self.tabuleiro_gabarito.iloc[x].at[y+1]])) > 1:
                            tentativas-=1
                            continue
-                self.tabuleiro_gabarito[x][y-1],\
-                           self.tabuleiro_gabarito[x][y],\
-                           self.tabuleiro_gabarito[x][y+1] = ' <','==','> '
+                self.tabuleiro_gabarito.iloc[x].at[y-1],\
+                           self.tabuleiro_gabarito.iloc[x].at[y],\
+                           self.tabuleiro_gabarito.iloc[x].at[y+1] = ' <','==','> '
             navios_restantes-=1
             sentido = "horizontal" if randint(0,1) else "vertical"
         return self.tabuleiro_gabarito
