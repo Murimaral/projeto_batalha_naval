@@ -1,5 +1,6 @@
 from random import randint
 import numpy as np
+import time
 import pandas as pd
 
 class BatalhaNaval():
@@ -11,6 +12,7 @@ class BatalhaNaval():
         self.dificuldade = dificuldade
         self.tabuleiro = self.gerar_tabuleiro_vazio()
         self.tabuleiro_gabarito = self.gerar_tabuleiro_vazio()
+        self.navios_plotados = []
 
 
     # Geração do tabuleiro em branco (apenas "água")
@@ -25,20 +27,79 @@ class BatalhaNaval():
                     orient="index", columns= list(range(1,11)))
         return tabuleiro
 
+    def converter_coordenadas(self,coordenada):
+        coordenada = coordenada.strip()
+        if len(coordenada) in [2,3]:
+            print("Coordenada deve conter 1 letra e um numero")
+            return self.tabuleiro
+        
+        letra = coordenada[0:1]
+        numero = coordenada[1:]
 
-    # Popular aleatoriamente o tabuleiro criado com os navios
-    def popular_navios(self):
-        navios_restantes = 0
-        if self.dificuldade == 'facil':
-            navios_restantes = self.ordem*self.ordem//3
-        while navios_restantes:
-            x = randint(0, self.ordem-1)
-            y = randint(0, self.ordem-1)
-            if self.tabuleiro_gabarito.iloc[x].at[y] == '~~':
-                self.tabuleiro_gabarito.iloc[x].at[y] = 'NN'
-                navios_restantes-=1
-        return self.tabuleiro_gabarito
-            
+        if letra.isnumeric() or not numero.isnumeric():
+            print("Coordenada inválida: Primeiro letra, em segundo número")
+            return self.tabuleiro
+        
+        if letra.lower() not in "abcdefghij" or int(numero) not in range(1,11):
+            print("Coordenada inválida, range excedido")
+            return self.tabuleiro
+
+        y = 'abcdefghij'.find(letra.lower())
+        x = int(numero)
+
+        return x,y
+
+    def atirar_em(self,x,y):
+
+        dict_msgs_erro = {
+            0: "Acertou a.........água :/. Tente de novo...",
+            1: "Uia! Quase mas não foi dessa vez...",
+            2: "Um tiro torto... e munição perdida..."
+        }
+
+        dict_msgs_acerto = {
+            0: "POWWW! Acertou em cheio!!!",
+            1: "Acertou!! Tiro, porrada e bomba!!",
+            2: "Danificou o navio inimigo!! Isso aí!"
+        }
+
+        dict_msgs_afunda = {
+            0: "E você afundou um navio inimigo!!",
+            1: "HOMEM AO MAR!! Você conseguiu afundar o navio inimigo!",
+            2: "Muito bem! Mandou o navio inimigo repousar no fundo do oceano..."
+        }
+        
+        if self.tabuleiro.iloc[y].at[x] in ['agua', 'NV']:
+            print("Escolha outra coordenada, ponto já revelado!!")
+            return self.tabuleiro
+
+        print("Um tiro foi dado e......")
+        # suspense
+        time.sleep(2)
+
+        if self.tabuleiro_gabarito.iloc[y].at[x] == '~^':
+            self.tabuleiro.iloc[y].at[x] = 'agua'
+            msg_id = randint(0,2)
+            print(dict_msgs_erro[msg_id])
+            print(f'Tentativa {self.tentativas_restantes}')
+            self.tentativas_restantes -= 1
+
+        else:
+            self.tabuleiro.iloc[y].at[x] = 'NV'
+            msg_id = randint(0,2)
+            print(dict_msgs_acerto[msg_id])
+            for navio in self.navios_plotados:
+                if (y,x) in navio:
+                    navio.remove((x,y))
+                    if len(navio) < 1:
+                        time.sleep(1)
+                        msg_id = randint(0,2)
+                        print(dict_msgs_afunda[msg_id])
+        
+        return self.tabuleiro
+                        
+
+    # Popular aleatoriamente o tabuleiro criado com navios (Porta-Aviões, Cruzador, Destroyer) 
     def popular_porta_avioes(self):
         # Sentido aleatorio
         sentido = "horizontal" if randint(0,1) else "vertical"
@@ -62,6 +123,7 @@ class BatalhaNaval():
                            self.tabuleiro_gabarito.iloc[x].at[y],\
                            self.tabuleiro_gabarito.iloc[x+1].at[y],\
                            self.tabuleiro_gabarito.iloc[x+2].at[y] = 'TT','||','PA','||','YY'
+                self.navios_plotados.append([(x-2,y),(x-1,y),(x,y),(x+1,y),(x+2,y)])
                 
             else:
                 # horizontal
@@ -79,6 +141,8 @@ class BatalhaNaval():
                            self.tabuleiro_gabarito.iloc[x].at[y],\
                            self.tabuleiro_gabarito.iloc[x].at[y+1],\
                            self.tabuleiro_gabarito.iloc[x].at[y+2] = ' <','==','PA','==','> '
+                self.navios_plotados.append([(x,y-2),(x,y-1),(x,y),(x,y+1),(x,y+2)])
+
             navios_restantes-=1
             sentido = "horizontal" if randint(0,1) else "vertical"
         return self.tabuleiro_gabarito
@@ -102,6 +166,7 @@ class BatalhaNaval():
                 self.tabuleiro_gabarito.iloc[x-1].at[y],\
                            self.tabuleiro_gabarito.iloc[x].at[y],\
                            self.tabuleiro_gabarito.iloc[x+1].at[y] = 'TT','||','YY'
+                self.navios_plotados.append([(x-1,y),(x,y),(x+1,y)])
             else:
                 # horizontal
                 x = randint(0, self.ordem-1)
@@ -114,6 +179,8 @@ class BatalhaNaval():
                 self.tabuleiro_gabarito.iloc[x].at[y-1],\
                            self.tabuleiro_gabarito.iloc[x].at[y],\
                            self.tabuleiro_gabarito.iloc[x].at[y+1] = ' <','==','> '
+                self.navios_plotados.append([(x,y-1),(x,y),(x,y+1)])
+
             navios_restantes-=1
             sentido = "horizontal" if randint(0,1) else "vertical"
         return self.tabuleiro_gabarito
