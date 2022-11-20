@@ -8,11 +8,12 @@ class BatalhaNaval():
         assert dificuldade in ['facil', 'normal', 'dificil']
         self.ordem = 10
         self.pontos = 0
-        self.tentativas_restantes = 5
+        self.tentativas_restantes = 10
         self.dificuldade = dificuldade
         self.tabuleiro = self.gerar_tabuleiro_vazio()
         self.tabuleiro_gabarito = self.gerar_tabuleiro_vazio()
         self.navios_plotados = []
+        self.quantidade_navios = 0
 
 
     # Geração do tabuleiro em branco (apenas "água")
@@ -29,7 +30,7 @@ class BatalhaNaval():
 
     def converter_coordenadas(self,coordenada):
         coordenada = coordenada.strip()
-        if len(coordenada) in [2,3]:
+        if len(coordenada) in [4]:
             print("Coordenada deve conter 1 letra e um numero")
             return self.tabuleiro
         
@@ -81,8 +82,7 @@ class BatalhaNaval():
             self.tabuleiro.iloc[y].at[x] = 'agua'
             msg_id = randint(0,2)
             print(dict_msgs_erro[msg_id])
-            print(f'Tentativa {self.tentativas_restantes}')
-            self.tentativas_restantes -= 1
+            # print(f'Tentativa {self.tentativas_restantes}')
 
         else:
             self.tabuleiro.iloc[y].at[x] = 'NV'
@@ -90,12 +90,14 @@ class BatalhaNaval():
             print(dict_msgs_acerto[msg_id])
             for navio in self.navios_plotados:
                 if (y,x) in navio:
-                    navio.remove((x,y))
+                    navio.remove((y,x))
+                    self.quantidade_navios -= 1
                     if len(navio) < 1:
                         time.sleep(1)
                         msg_id = randint(0,2)
                         print(dict_msgs_afunda[msg_id])
         
+        self.tentativas_restantes -= 1
         return self.tabuleiro
                         
 
@@ -185,8 +187,33 @@ class BatalhaNaval():
             sentido = "horizontal" if randint(0,1) else "vertical"
         return self.tabuleiro_gabarito
 
+    def popular_navios(self):
+        # Sentido aleatorio
+        sentido = "horizontal" if randint(0,1) else "vertical"
+        # plotar um ponto aleatorio que caiba o navio
+        navios_restantes = 5
+        tentativas = 10
+        while navios_restantes>0 and tentativas>0:
+            if sentido == "vertical":
+                # vertical
+                x = randint(1, self.ordem-2)
+                y = randint(1, self.ordem)
+                if len(set([self.tabuleiro_gabarito.iloc[x].at[y]])) > 1:
+                           tentativas-=1
+                           continue
+                self.tabuleiro_gabarito.iloc[x].at[y] = '<>'
+                self.navios_plotados.append([(x,y)])
+            else:
+                # horizontal
+                x = randint(0, self.ordem-1)
+                y = randint(2, self.ordem-1)
+                if len(set([self.tabuleiro_gabarito.iloc[x].at[y]])) > 1:
+                           tentativas-=1
+                           continue
+                self.tabuleiro_gabarito.iloc[x].at[y] = '<>'
+                self.navios_plotados.append([(x,y)])
 
-
-
-#game = BatalhaNaval(10)
-#game.popular_navios()
+            navios_restantes-=1
+            sentido = "horizontal" if randint(0,1) else "vertical"
+        self.quantidade_navios = len(self.navios_plotados)
+        return self.tabuleiro_gabarito
