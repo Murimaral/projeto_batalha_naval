@@ -1,10 +1,13 @@
 from batalha_naval import BatalhaNaval
 
 # Inicia Jogo
-jogo = BatalhaNaval()
-jogo.popular_navios()
+
 
 def main():
+    nivel = input("BEM VINDO MARUJO!!\nPara começar a batalha, escolhe um nivel de dificuldade:\nfacil, normal ou dificil")
+    while nivel.lower() not in ['facil', 'normal', 'dificil']:
+        nivel = input("Nivel inválido, cabeça de bagre! Escolhe entre\n facil, normal ou dificil")
+    jogo = BatalhaNaval(dificuldade=nivel.lower())
     while (jogo.tentativas_restantes > 0 or jogo.calcula_navios_restantes() >0):
         print('Quantidade de Tentativas: ', jogo.tentativas_restantes)
         print('Navios Restantes: ', jogo.calcula_navios_restantes())
@@ -15,12 +18,12 @@ def main():
         jogo.atirar_em(x, y)
 
     if jogo.quantidade_navios <=0:
-        print('VOCÊ VENCEU!!!')
+        print('VOCÊ VENCEU!!!\nO mar é todo seu agora, capitão!')
 
     if jogo.tentativas_restantes <= 0:
         print('Você perdeu :/, tente outra vez!')
 
-    novo = input('Gostaria de começar um novo jogo?[s] ou [n]\n')
+    novo = input('Gostaria de começar uma nova batalha?[s] ou [n]\n')
     
     if novo.lower() == 's':
         print("Vamos para mais uma! Derrote a frota inimiga!")
