@@ -115,6 +115,7 @@ class BatalhaNaval():
                         msg_id = randint(0,3)
                         print(dict_msgs_afunda[msg_id])
         else:
+            self.tabuleiro.iloc[y].at[x] = '[SP]'
             self.animar_sup()
         
         self.tentativas_restantes -= 1
@@ -122,10 +123,10 @@ class BatalhaNaval():
 
     @staticmethod                
     def animar_mira():
-        print("\n\nPreparar...\n")
-        time.sleep(0.3)
-        print("Apontar...\n")
-        time.sleep(0.3)
+        print("\n\nPreparar...")
+        time.sleep(0.5)
+        print("Apontar...")
+        time.sleep(0.5)
         print("E...\n")
         # suspense
         print("..../----\....")
@@ -134,7 +135,7 @@ class BatalhaNaval():
         print("....|    |....")
         print("....|    |....")
         print("....|____|....")
-        time.sleep(2)
+        time.sleep(3)
 
     @staticmethod
     def animar_tiro():
@@ -151,15 +152,31 @@ class BatalhaNaval():
         print("       O      ")
         time.sleep(0.5)
         print("       O      ")
+        print("      ...     \n\n")
         time.sleep(2)
-        print("      ...     \n")
+        
 
     def animar_sup(self):
+        dict_msg_mun = {
+            0: "Isso é munição!!! Que conveniente\n",
+            1: "Uma caixa de munição no meio do oceano? Suspeito... Mas e daí, ela é sua agora!\n",
+            2: "Hoje é seu dia de sorte! Uma caixa de munição toda para você!\n"
+        }
         print("ALTO LÁ!")
-        time.sleep(0.5)
+        time.sleep(1)
         print("Você avista uma caixa muito chamativa boiando...")
-        time.sleep(0.5)
-        print("Uma caixa de munição!!\nQue conveniente\n")
+        time.sleep(2)
+        msg_id = randint(0,2)
+        print(f"{dict_msg_mun[msg_id]}")
+        print(".......................")
+        print(".....============......")
+        print("....||          ||.....")
+        print("....||  MUNIÇÃO ||.....")
+        print("....||          ||.....")
+        print(".....============......")
+        print(".......................\n")
+
+
         time.sleep(0.4)
         print("Você recebe mais 3 tentativas")
         self.tentativas_restantes+=3
@@ -312,6 +329,7 @@ class BatalhaNaval():
             if self.tabuleiro_gabarito.iloc[x].at[y] != '~^':
                 continue
             self.tabuleiro_gabarito.iloc[x].at[y] = '[SP]'
+            municao_restante-=1
 
 
 
@@ -321,4 +339,7 @@ class BatalhaNaval():
     def popular_navios(self):
         self.popular_porta_avioes()
         self.popular_cruzador()
+        self.popular_destroyer()
+        self.popular_submarino()
+        self.popular_municao()
  

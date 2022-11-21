@@ -4,7 +4,7 @@ from batalha_naval import BatalhaNaval
 
 
 def main():
-    nivel = input("BEM VINDO MARUJO!!\nPara começar a batalha, escolhe um nivel de dificuldade:\nfacil, normal ou dificil")
+    nivel = input("BEM VINDO MARUJO!!\nPara começar a batalha, escolhe um nivel de dificuldade:\nfacil, normal ou dificil\n")
     while nivel.lower() not in ['facil', 'normal', 'dificil']:
         nivel = input("Nivel inválido, cabeça de bagre! Escolhe entre\n facil, normal ou dificil")
     jogo = BatalhaNaval(dificuldade=nivel.lower())
