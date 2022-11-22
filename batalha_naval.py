@@ -8,12 +8,12 @@ class BatalhaNaval():
         assert dificuldade in ['facil', 'normal', 'dificil']
         self.ordem = 10
         self.pontos = 0
-        self.tentativas_restantes = 5
+        self.tentativas_restantes = 10
         self.dificuldade = dificuldade
         self.tabuleiro = self.gerar_tabuleiro_vazio()
         self.tabuleiro_gabarito = self.gerar_tabuleiro_vazio()
         self.navios_plotados = []
-
+        self.popular_navios()
 
     # Geração do tabuleiro em branco (apenas "água")
     def gerar_tabuleiro_vazio(self):
@@ -27,22 +27,40 @@ class BatalhaNaval():
                     orient="index", columns= list(range(1,11)))
         return tabuleiro
 
+    def calcula_navios_restantes(self):
+        self.navios_plotados = [ x for x in self.navios_plotados if x ]
+        return len(self.navios_plotados)
+
+    def escolher_coordenada(self):
+        coordenada_string = input("Digite uma coordenada: ")
+        x,y = self.converter_coordenadas(coordenada_string)
+        if not self.atirar_em(x,y):
+            inp = input("Digite uma coordenada: ")
+            return self.escolher_coordenada(inp)
+
     def converter_coordenadas(self,coordenada):
         coordenada = coordenada.strip()
-        if len(coordenada) in [2,3]:
-            print("Coordenada deve conter 1 letra e um numero")
-            return self.tabuleiro
+        print(len(coordenada), coordenada)
+        if len(coordenada) not in [2,3]:
+            print("Coordenada deve conter 1 letra e um numero\n")
+            print(self.tabuleiro)
+            inp = input("Digite uma coordenada: ")
+            return self.converter_coordenadas(inp)
         
         letra = coordenada[0:1]
         numero = coordenada[1:]
 
         if letra.isnumeric() or not numero.isnumeric():
-            print("Coordenada inválida: Primeiro letra, em segundo número")
-            return self.tabuleiro
+            print("Coordenada inválida: Primeiro letra, em segundo número\n")
+            print(self.tabuleiro)
+            inp = input("Digite uma coordenada: ")
+            return self.converter_coordenadas(inp)
         
         if letra.lower() not in "abcdefghij" or int(numero) not in range(1,11):
-            print("Coordenada inválida, range excedido")
-            return self.tabuleiro
+            print("Coordenada inválida, range excedido\n")
+            print(self.tabuleiro)
+            inp = input("Digite uma coordenada: ")
+            return self.converter_coordenadas(inp)
 
         y = 'abcdefghij'.find(letra.lower())
         x = int(numero)
@@ -52,59 +70,132 @@ class BatalhaNaval():
     def atirar_em(self,x,y):
 
         dict_msgs_erro = {
-            0: "Acertou a.........água :/. Tente de novo...",
-            1: "Uia! Quase mas não foi dessa vez...",
-            2: "Um tiro torto... e munição perdida..."
+            0: "\nAcertou a.........água :/. Tente de novo...\n",
+            1: "\nUia! Quase mas não foi dessa vez...\n",
+            2: "\nUm tiro torto... e munição perdida...\n"
         }
 
         dict_msgs_acerto = {
-            0: "POWWW! Acertou em cheio!!!",
-            1: "Acertou!! Tiro, porrada e bomba!!",
-            2: "Danificou o navio inimigo!! Isso aí!"
+            0: "\nPOWWW! Acertou em cheio!!!\n",
+            1: "\nAcertou!! Tiro, porrada e bomba!!\n",
+            2: "\nDanificou o navio inimigo!! Isso aí!\n"
         }
 
         dict_msgs_afunda = {
-            0: "E você afundou um navio inimigo!!",
-            1: "HOMEM AO MAR!! Você conseguiu afundar o navio inimigo!",
-            2: "Muito bem! Mandou o navio inimigo repousar no fundo do oceano..."
+            0: "\nE você afundou um navio inimigo!!\n",
+            1: "\nHOMEM AO MAR!! Você conseguiu afundar o navio inimigo!\n",
+            2: "\nMuito bem! Mandou o navio inimigo repousar no fundo do oceano...\n",
+            3: "\n\"É um navio que não afunda\" disseram... Pois esse afundou!!\n"
         }
         
-        if self.tabuleiro.iloc[y].at[x] in ['agua', 'NV']:
-            print("Escolha outra coordenada, ponto já revelado!!")
-            return self.tabuleiro
+        if self.tabuleiro.iloc[y].at[x] in ['agua', 'NV', '[SP]']:
+            print("Escolha outra coordenada, ponto já revelado!!\n")
+            print(self.tabuleiro)
+            return False
 
-        print("Um tiro foi dado e......")
-        # suspense
-        time.sleep(2)
+        self.animar_mira()
 
         if self.tabuleiro_gabarito.iloc[y].at[x] == '~^':
+            self.animar_tiro()
             self.tabuleiro.iloc[y].at[x] = 'agua'
             msg_id = randint(0,2)
             print(dict_msgs_erro[msg_id])
-            print(f'Tentativa {self.tentativas_restantes}')
             self.tentativas_restantes -= 1
 
-        else:
+        elif self.tabuleiro_gabarito.iloc[y].at[x] != '[SP]':
+            self.animar_tiro()
             self.tabuleiro.iloc[y].at[x] = 'NV'
             msg_id = randint(0,2)
             print(dict_msgs_acerto[msg_id])
             for navio in self.navios_plotados:
                 if (y,x) in navio:
-                    navio.remove((x,y))
+                    navio.remove((y,x))
                     if len(navio) < 1:
                         time.sleep(1)
-                        msg_id = randint(0,2)
+                        msg_id = randint(0,3)
                         print(dict_msgs_afunda[msg_id])
+                        print(f'Voce AFUNDOU UM NAVIO. Navios restantes: {self.calcula_navios_restantes()}')
+        else:
+            self.tabuleiro.iloc[y].at[x] = '[SP]'
+            self.animar_sup()
+
+        return True
+
+    @staticmethod                
+    def animar_mira():
+        print("\n\nPreparar...")
+        time.sleep(0.5)
+        print("Apontar...")
+        time.sleep(0.5)
+        print("E...\n")
+        # suspense
+        print("..............")
+        print("..../----\....")
+        print(".../      \....")
+        print("...\      /....")
+        print("....|    |....")
+        print("....|    |....")
+        print("....|____|....")
+        time.sleep(3)
+
+    @staticmethod
+    def animar_tiro():
+        print("..../\/\/\....")
+        print("...< POOW >...")
+        print("....\/\/\/....")
+        time.sleep(0.5)
+        print("       O      ")
+        time.sleep(0.3)
+        print("       O      ")
+        time.sleep(0.3)
+        print("       O      ")
+        time.sleep(0.3)
+        print("       O      ")
+        time.sleep(0.3)
+        print("       O      ")
+        time.sleep(0.3)
+        print("       O      ")
+        time.sleep(0.3)
+        print("       O      ")
+        time.sleep(0.3)
+        print("       O      ")
+        time.sleep(0.3)
+        print("       O      ")
+        print("      ...     \n\n")
+        time.sleep(2)
         
-        return self.tabuleiro
-                        
+
+    def animar_sup(self):
+        dict_msg_mun = {
+            0: "Isso é munição!!! Que conveniente\n",
+            1: "Uma caixa de munição no meio do oceano? Suspeito... Mas e daí, ela é sua agora!\n",
+            2: "Hoje é seu dia de sorte! Uma caixa de munição toda para você!\n"
+        }
+        print("ALTO LÁ!")
+        time.sleep(1)
+        print("Você avista uma caixa muito chamativa boiando...")
+        time.sleep(2)
+        msg_id = randint(0,2)
+        print(f"{dict_msg_mun[msg_id]}")
+        print(".......................")
+        print(".....============......")
+        print("....||          ||.....")
+        print("....||  MUNIÇÃO ||.....")
+        print("....||          ||.....")
+        print(".....============......")
+        print(".......................\n")
+
+
+        time.sleep(2)
+        print("Você recebe mais 3 tentativas!!")
+        self.tentativas_restantes+=3    
 
     # Popular aleatoriamente o tabuleiro criado com navios (Porta-Aviões, Cruzador, Destroyer) 
     def popular_porta_avioes(self):
         # Sentido aleatorio
         sentido = "horizontal" if randint(0,1) else "vertical"
         # plotar um ponto aleatorio que caiba o navio
-        navios_restantes = 3
+        navios_restantes = 1
         tentativas = 10
         while navios_restantes>0 and tentativas>0:
             if sentido == "vertical":
@@ -145,13 +236,12 @@ class BatalhaNaval():
 
             navios_restantes-=1
             sentido = "horizontal" if randint(0,1) else "vertical"
-        return self.tabuleiro_gabarito
     
     def popular_cruzador(self):
         # Sentido aleatorio
         sentido = "horizontal" if randint(0,1) else "vertical"
         # plotar um ponto aleatorio que caiba o navio
-        navios_restantes = 6
+        navios_restantes = 3
         tentativas = 10
         while navios_restantes>0 and tentativas>0:
             if sentido == "vertical":
@@ -183,10 +273,79 @@ class BatalhaNaval():
 
             navios_restantes-=1
             sentido = "horizontal" if randint(0,1) else "vertical"
-        return self.tabuleiro_gabarito
+
+    def popular_destroyer(self):
+        # Sentido aleatorio
+        sentido = "horizontal" if randint(0,1) else "vertical"
+        # plotar um ponto aleatorio que caiba o navio
+        navios_restantes = 1
+        tentativas = 10
+        while navios_restantes>0 and tentativas>0:
+            if sentido == "vertical":
+                # vertical
+                x = randint(1, self.ordem-2)
+                y = randint(1, self.ordem)
+                if len(set([self.tabuleiro_gabarito.iloc[x-1].at[y],\
+                           self.tabuleiro_gabarito.iloc[x].at[y]])) > 1:
+                           tentativas-=1
+                           continue
+                self.tabuleiro_gabarito.iloc[x-1].at[y],\
+                           self.tabuleiro_gabarito.iloc[x].at[y] = '/dest\\','\\royer/'
+                self.navios_plotados.append([(x-1,y),(x,y)])
+            else:
+                # horizontal
+                x = randint(0, self.ordem-1)
+                y = randint(2, self.ordem-1)
+                if len(set([self.tabuleiro_gabarito.iloc[x].at[y-1],\
+                           self.tabuleiro_gabarito.iloc[x].at[y]])) > 1:
+                           tentativas-=1
+                           continue
+                self.tabuleiro_gabarito.iloc[x].at[y-1],\
+                           self.tabuleiro_gabarito.iloc[x].at[y] = ' <dest','royer>'
+                self.navios_plotados.append([(x,y-1),(x,y)])
+
+            navios_restantes-=1
+            sentido = "horizontal" if randint(0,1) else "vertical"
+    
+    def popular_submarino(self):
+        # plotar um ponto aleatorio que caiba o navio
+        navios_restantes = 3
+        tentativas = 10
+        while navios_restantes>0 and tentativas>0:
+            x = randint(0, self.ordem-1)
+            y = randint(1, self.ordem)
+            if self.tabuleiro_gabarito.iloc[x].at[y] != '~^':
+                tentativas-=1
+                continue
+            self.tabuleiro_gabarito.iloc[x].at[y] = '({O})'
+            self.navios_plotados.append([(x,y)])
+            navios_restantes-=1
+
+    def popular_municao(self):
+
+        nivel = {
+            'facil': 5,
+            'normal': 3
+        }
+
+        municao_restante = nivel.get(self.dificuldade, 0)
+        while municao_restante>0:
+            x = randint(0, self.ordem-1)
+            y = randint(1, self.ordem)
+            if self.tabuleiro_gabarito.iloc[x].at[y] != '~^':
+                continue
+            self.tabuleiro_gabarito.iloc[x].at[y] = '[SP]'
+            municao_restante-=1
 
 
 
+    # def popular_destroyer() 2 quadrados
+    # def popular 
 
-#game = BatalhaNaval(10)
-#game.popular_navios()
+    def popular_navios(self):
+        self.popular_porta_avioes()
+        self.popular_cruzador()
+        self.popular_destroyer()
+        self.popular_submarino()
+        self.popular_municao()
+ 
