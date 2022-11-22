@@ -317,11 +317,10 @@ class BatalhaNaval():
             if self.tabuleiro_gabarito.iloc[x].at[y] != '~^':
                 tentativas-=1
                 continue
-            self.tabuleiro_gabarito.iloc[x].at[y] = '(({O}))'
+            self.tabuleiro_gabarito.iloc[x].at[y] = '({O})'
             self.navios_plotados.append([(x,y)])
+            navios_restantes-=1
 
-        navios_restantes-=1
-        
     def popular_municao(self):
 
         nivel = {

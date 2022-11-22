@@ -17,7 +17,7 @@ def main():
         x,y = jogo.converter_coordenadas(coordenada)
         jogo.atirar_em(x, y)
 
-    if jogo.quantidade_navios <=0:
+    if jogo.calcula_navios_restantes() <=0:
         print('VOCÊ VENCEU!!!\nO mar é todo seu agora, capitão!')
 
     if jogo.tentativas_restantes <= 0:
