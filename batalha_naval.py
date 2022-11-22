@@ -100,7 +100,7 @@ class BatalhaNaval():
             self.tabuleiro.iloc[y].at[x] = 'agua'
             msg_id = randint(0,2)
             print(dict_msgs_erro[msg_id])
-            # print(f'Tentativa {self.tentativas_restantes}')
+            self.tentativas_restantes -= 1
 
         elif self.tabuleiro_gabarito.iloc[y].at[x] != '[SP]':
             self.animar_tiro()
@@ -114,11 +114,11 @@ class BatalhaNaval():
                         time.sleep(1)
                         msg_id = randint(0,3)
                         print(dict_msgs_afunda[msg_id])
+                        print(f'Voce AFUNDOU UM NAVIO. Navios restantes: {self.calcula_navios_restantes()}')
         else:
             self.tabuleiro.iloc[y].at[x] = '[SP]'
             self.animar_sup()
-        
-        self.tentativas_restantes -= 1
+
         return True
 
     @staticmethod                
@@ -129,6 +129,7 @@ class BatalhaNaval():
         time.sleep(0.5)
         print("E...\n")
         # suspense
+        print("..............")
         print("..../----\....")
         print(".../      \....")
         print("...\      /....")
@@ -144,13 +145,21 @@ class BatalhaNaval():
         print("....\/\/\/....")
         time.sleep(0.5)
         print("       O      ")
-        time.sleep(0.5)
+        time.sleep(0.3)
         print("       O      ")
-        time.sleep(0.5)
+        time.sleep(0.3)
         print("       O      ")
-        time.sleep(0.5)
+        time.sleep(0.3)
         print("       O      ")
-        time.sleep(0.5)
+        time.sleep(0.3)
+        print("       O      ")
+        time.sleep(0.3)
+        print("       O      ")
+        time.sleep(0.3)
+        print("       O      ")
+        time.sleep(0.3)
+        print("       O      ")
+        time.sleep(0.3)
         print("       O      ")
         print("      ...     \n\n")
         time.sleep(2)
@@ -177,18 +186,16 @@ class BatalhaNaval():
         print(".......................\n")
 
 
-        time.sleep(0.4)
-        print("Você recebe mais 3 tentativas")
-        self.tentativas_restantes+=3
-        print(f"Tentativas restantes: {self.tentativas_restantes}")
-        
+        time.sleep(2)
+        print("Você recebe mais 3 tentativas!!")
+        self.tentativas_restantes+=3    
 
     # Popular aleatoriamente o tabuleiro criado com navios (Porta-Aviões, Cruzador, Destroyer) 
     def popular_porta_avioes(self):
         # Sentido aleatorio
         sentido = "horizontal" if randint(0,1) else "vertical"
         # plotar um ponto aleatorio que caiba o navio
-        navios_restantes = 3
+        navios_restantes = 1
         tentativas = 10
         while navios_restantes>0 and tentativas>0:
             if sentido == "vertical":
@@ -234,7 +241,7 @@ class BatalhaNaval():
         # Sentido aleatorio
         sentido = "horizontal" if randint(0,1) else "vertical"
         # plotar um ponto aleatorio que caiba o navio
-        navios_restantes = 6
+        navios_restantes = 3
         tentativas = 10
         while navios_restantes>0 and tentativas>0:
             if sentido == "vertical":

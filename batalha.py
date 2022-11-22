@@ -8,7 +8,7 @@ def main():
     while nivel.lower() not in ['facil', 'normal', 'dificil']:
         nivel = input("Nivel inválido, cabeça de bagre! Escolhe entre\n facil, normal ou dificil")
     jogo = BatalhaNaval(dificuldade=nivel.lower())
-    while (jogo.tentativas_restantes > 0 or jogo.calcula_navios_restantes() >0):
+    while (jogo.tentativas_restantes > 0 and jogo.calcula_navios_restantes() >0):
         print('Quantidade de Tentativas: ', jogo.tentativas_restantes)
         print('Navios Restantes: ', jogo.calcula_navios_restantes())
         # print(jogo.tabuleiro_gabarito)
