@@ -11,6 +11,7 @@ def main():
     while (jogo.tentativas_restantes > 0 and jogo.calcula_navios_restantes() >0):
         print('Quantidade de Tentativas: ', jogo.tentativas_restantes)
         print('Navios Restantes: ', jogo.calcula_navios_restantes())
+        print('Pontuação: ', jogo.pontos)
         # print(jogo.tabuleiro_gabarito)
         print(jogo.tabuleiro)
         coordenada = input('Digite as coordenadas: ')
@@ -22,7 +23,7 @@ def main():
 
     if jogo.tentativas_restantes <= 0:
         print('Você perdeu :/, tente outra vez!')
-
+    print('Sua pontuação foi: ', jogo.pontos)
     novo = input('Gostaria de começar uma nova batalha?[s] ou [n]\n')
     
     if novo.lower() == 's':
