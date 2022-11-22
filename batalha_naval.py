@@ -106,12 +106,14 @@ class BatalhaNaval():
             self.animar_tiro()
             self.tabuleiro.iloc[y].at[x] = 'NV'
             msg_id = randint(0,2)
+            self.pontos += 1
             print(dict_msgs_acerto[msg_id])
             for navio in self.navios_plotados:
                 if (y,x) in navio:
                     navio.remove((y,x))
                     if len(navio) < 1:
                         time.sleep(1)
+                        self.pontos += 1
                         msg_id = randint(0,3)
                         print(dict_msgs_afunda[msg_id])
                         print(f'Voce AFUNDOU UM NAVIO. Navios restantes: {self.calcula_navios_restantes()}')
