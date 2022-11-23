@@ -12,7 +12,7 @@ def main():
         print('Quantidade de Tentativas: ', jogo.tentativas_restantes)
         print('Navios Restantes: ', jogo.calcula_navios_restantes())
         # print(jogo.tabuleiro_gabarito)
-        print(jogo.tabuleiro)
+        print(jogo)
         coordenada = input('Digite as coordenadas: ')
         x,y = jogo.converter_coordenadas(coordenada)
         jogo.atirar_em(x, y)

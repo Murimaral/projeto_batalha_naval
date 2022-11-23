@@ -15,6 +15,13 @@ class BatalhaNaval():
         self.navios_plotados = []
         self.popular_navios()
 
+    def __str__(self):
+        return "\n========================================="+\
+               "\n                TABULEIRO                \n"+\
+                "=========================================\n"+\
+                str(self.tabuleiro)+\
+                "\n=========================================\n"
+
     # Geração do tabuleiro em branco (apenas "água")
     def gerar_tabuleiro_vazio(self):
         array_agua = ['~^'] * self.ordem
