@@ -132,7 +132,7 @@ class BatalhaNaval():
         else:
             self.tabuleiro.iloc[y].at[x] = '[SP]'
             self.animar_sup()
-        time.sleep(6)
+        time.sleep(5)
         return True
 
     @staticmethod                
@@ -143,68 +143,68 @@ class BatalhaNaval():
         time.sleep(0.5)
         print("E...\n")
         # suspense
-        print("      ..      ")
-        print("     ....     ")
-        print("  ..........  ")
-        print("..............")
-        print("..............")
-        print("..../----\....")
-        print(".../      \...")
-        print("...\      /...")
-        print("....|    |....")
-        print("....|    |....")
-        print("....|____|....")
-        print("  ..........  ")
+        print(" "*10+"      ..      ")
+        print(" "*10+"     ....     ")
+        print(" "*10+"  ..........  ")
+        print(" "*10+"..............")
+        print(" "*10+"..............")
+        print(" "*10+"..../----\....")
+        print(" "*10+".../      \...")
+        print(" "*10+"...\      /...")
+        print(" "*10+"....|    |....")
+        print(" "*10+"....|    |....")
+        print(" "*10+"....|____|....")
+        print(" "*10+"  ..........  ")
 
         time.sleep(3)
 
     @staticmethod
     def animar_tiro():
-        print("  ../\/\/\..  ")
-        print("   < POOW >   ")
-        print("    \/\/\/    ")
+        print(" "*10+"  ../\/\/\..  ")
+        print(" "*10+"   < POOW >   ")
+        print(" "*10+"    \/\/\/    ")
         time.sleep(0.5)
-        print("       O      ")
+        print(" "*10+"       O      ")
         time.sleep(0.3)
-        print("       O      ")
+        print(" "*10+"       O      ")
         time.sleep(0.3)
-        print("       O      ")
+        print(" "*10+"       O      ")
         time.sleep(0.3)
-        print("       O      ")
+        print(" "*10+"       O      ")
         time.sleep(0.3)
-        print("       O      ")
+        print(" "*10+"       O      ")
         time.sleep(0.3)
-        print("       O      ")
+        print(" "*10+"       O      ")
         time.sleep(0.3)
-        print("       O      ")
+        print(" "*10+"       O      ")
         time.sleep(0.3)
-        print("       O      ")
+        print(" "*10+"       O      ")
         time.sleep(0.3)
-        print("       O      ")
-        print("      ...     \n\n")
+        print(" "*10+"       O      ")
+        print(" "*10+"      ...     \n\n")
         time.sleep(2)
         
 
     def animar_sup(self):
         dict_msg_mun = {
-            0: "Isso é munição!!! Que conveniente\n",
-            1: "Uma caixa de munição no meio do oceano? Suspeito... Mas e daí, ela é sua agora!\n",
-            2: "Hoje é seu dia de sorte! Uma caixa de munição toda para você!\n"
+            0: "\nIsso é munição!!! Que conveniente\n",
+            1: "\nUma caixa de munição no meio do oceano? Suspeito... Mas e daí, ela é sua agora!\n",
+            2: "\nHoje é seu dia de sorte! Uma caixa de munição toda para você!\n"
         }
-        print("    ......    ")
-        print(">>>ALTO LÁ!<<<\n")
+        print(" "*10+"    ......    ")
+        print(" "*10+">>>ALTO LÁ!<<<\n")
         time.sleep(1)
         print("Você avista uma caixa muito chamativa boiando...\n")
         time.sleep(2)
         msg_id = randint(0,2)
         print("*"*(len(dict_msg_mun[msg_id])-2)+dict_msg_mun[msg_id]+"*"*(len(dict_msg_mun[msg_id])-2))
-        print(".......................")
-        print(".....============......")
-        print("....||          ||.....")
-        print("....||  MUNIÇÃO ||.....")
-        print("....||          ||.....")
-        print(".....============......")
-        print(".......................\n")
+        print(" "*10+".......................")
+        print(" "*10+".....============......")
+        print(" "*10+"....||          ||.....")
+        print(" "*10+"....||  MUNIÇÃO ||.....")
+        print(" "*10+"....||          ||.....")
+        print(" "*10+".....============......")
+        print(" "*10+".......................\n")
 
 
         time.sleep(1)

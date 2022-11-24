@@ -1,6 +1,25 @@
 from batalha_naval import BatalhaNaval
 import time
+import criar_tabela
+import sqlite3
 # Inicia Jogo
+
+def verifica_e_atualiza_records(pontuacao_feita):
+
+    connection = sqlite3.connect('records.db')
+    cursor = connection.cursor()
+
+    record_query = 'SELECT * FROM records WHERE pontos>?'
+    result = cursor.execute(record_query, (pontuacao_feita,)) 
+    row = result.fetchone()
+    if row:
+        connection.close()
+        return False
+    else:
+        insert_query = 'INSERT INTO records VALUES (NULL,?)'
+        cursor.execute(insert_query, (pontuacao_feita,))
+        connection.close()
+        return pontuacao_feita
 
 def main():
     dict_msgs = {
@@ -42,10 +61,14 @@ def main():
         jogo.atirar_em(x, y)
 
     if jogo.calcula_navios_restantes() <=0:
-        print('VOCÊ VENCEU!!!\nO mar é todo seu agora, capitão!')
-        time.sleep(3)
+        print('VITORIAAAA!!!\nO mar é todo seu agora, capitão!')
+        time.sleep(1)
+        if verifica_e_atualiza_records(jogo.pontos):
+            print(f"\n\nE VOCÊ BATEU UM RECORD!!! Com {jogo.pontos} PONTOS!\nNavegar é preciso, mas deixar seu LEGADO é essencial!!!\nParabéns!!!\n\n")
+            time.sleep(1)
+        time.sleep(1)
 
-    if jogo.tentativas_restantes <= 0:
+    elif jogo.tentativas_restantes <= 0:
         print('G A M E   O V E R !')
         print('VOCE PERDEU :(')
         time.sleep(3)
