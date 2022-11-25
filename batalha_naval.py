@@ -1,5 +1,4 @@
 from random import randint
-import numpy as np
 import time
 import pandas as pd
 
@@ -96,7 +95,7 @@ class BatalhaNaval():
             3: "\n\"É um navio que não afunda\" disseram... Pois esse afundou!!\n"
         }
         
-        if self.tabuleiro.iloc[y].at[x] in ['agua', 'NV', '[SP]']:
+        if self.tabuleiro.iloc[y].at[x] in ['ag', 'NV', '[SP]']:
             print(self)
             print("Escolha outra coordenada, ponto já revelado!!\n")
             time.sleep(5)
@@ -106,7 +105,7 @@ class BatalhaNaval():
 
         if self.tabuleiro_gabarito.iloc[y].at[x] == '~^':
             self.animar_tiro()
-            self.tabuleiro.iloc[y].at[x] = 'agua'
+            self.tabuleiro.iloc[y].at[x] = 'ag'
             msg_id = randint(0,2)
             print("X"*(len(dict_msgs_erro[msg_id])-2)+dict_msgs_erro[msg_id]+"X"*(len(dict_msgs_erro[msg_id])-2))
             self.tentativas_restantes -= 1
@@ -132,7 +131,7 @@ class BatalhaNaval():
         else:
             self.tabuleiro.iloc[y].at[x] = '[SP]'
             self.animar_sup()
-        time.sleep(5)
+        time.sleep(4)
         return True
 
     @staticmethod                
@@ -216,7 +215,7 @@ class BatalhaNaval():
         # Sentido aleatorio
         sentido = "horizontal" if randint(0,1) else "vertical"
         # plotar um ponto aleatorio que caiba o navio
-        navios_restantes = 1
+        navios_restantes = 3
         tentativas = 10
         while navios_restantes>0 and tentativas>0:
             if sentido == "vertical":
@@ -262,7 +261,7 @@ class BatalhaNaval():
         # Sentido aleatorio
         sentido = "horizontal" if randint(0,1) else "vertical"
         # plotar um ponto aleatorio que caiba o navio
-        navios_restantes = 3
+        navios_restantes = 5
         tentativas = 10
         while navios_restantes>0 and tentativas>0:
             if sentido == "vertical":
@@ -299,7 +298,7 @@ class BatalhaNaval():
         # Sentido aleatorio
         sentido = "horizontal" if randint(0,1) else "vertical"
         # plotar um ponto aleatorio que caiba o navio
-        navios_restantes = 1
+        navios_restantes = 2
         tentativas = 10
         while navios_restantes>0 and tentativas>0:
             if sentido == "vertical":
@@ -330,7 +329,7 @@ class BatalhaNaval():
     
     def popular_submarino(self):
         # plotar um ponto aleatorio que caiba o navio
-        navios_restantes = 3
+        navios_restantes = 5
         tentativas = 10
         while navios_restantes>0 and tentativas>0:
             x = randint(0, self.ordem-1)
