@@ -31,7 +31,7 @@ def main():
     time.sleep(1)
     print("\nVamos às REGRAS:")
     time.sleep(2)
-    print("\n1) Você inicia o jogo com 10  TENTATIVAS.\n2) ERRAR um tiro consome 1 TENTATIVA.\n3) ACERTOS não gastam TENTATIVA\n4) Você vence se derrubar COMPLETAMENTE toda a frota inimiga\n5) Há caixas de munição escondidas que dão BONUS de 3 TENTATIVAS (exceto no nivel dificil!)\n6) \'~^\'=DESCONHECIDO, NV=navio, agua=tiro errado, SP=municao\n7) Acertar= 1 ponto, Afundar navio = 3 pontos\n8) Voce perde se esgotarem suas TENTATIVAS, havendo ao menos 1 navio\n9) DIVIRTA-SE :)")
+    print("\n1) Você inicia o jogo com 10  TENTATIVAS.\n2) ERRAR um tiro consome 1 TENTATIVA.\n3) ACERTOS não gastam TENTATIVA\n4) Você vence se derrubar COMPLETAMENTE toda a frota inimiga\n5) Há caixas de munição escondidas que dão BONUS de 3 TENTATIVAS (exceto no nivel dificil!)\n6) \'~^\'=DESCONHECIDO, NV=navio, ag=tiro na agua, SP=municao\n7) Acertar= 1 ponto, Afundar navio = 3 pontos\n8) Voce perde se esgotarem suas TENTATIVAS, havendo ao menos 1 navio\n9) DIVIRTA-SE :)")
     time.sleep(5)
     print("Sem mais delongas...\n")
     time.sleep(1)
